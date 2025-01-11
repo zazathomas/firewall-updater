@@ -1,0 +1,18 @@
+services:
+ firewall-updater:
+    container_name: firewall-updater
+    image: ghcr.io/zazathomas/firewall-updater:0.0.1
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./.oci:/root/.oci
+    environment:
+      NSG_ID: ${NSG_ID}
+      NSG_RULE_ID: ${NSG_RULE_ID}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      REPO_OWNER: ${REPO_OWNER}
+      REPO_NAME: ${REPO_NAME}
+      FILE_PATH: ${FILE_PATH}
+      BRANCH_NAME: ${BRANCH_NAME}
+    env_file: .env
+
