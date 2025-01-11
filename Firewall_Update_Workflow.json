@@ -1,0 +1,117 @@
+{
+  "name": "Firewall Update Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "0fb6c3b4-9509-4fa4-a8ef-a6391c23d05e",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        20
+      ],
+      "id": "72bbbbb7-4081-4456-9a5a-087d0714df30",
+      "name": "Webhook",
+      "webhookId": "0fb6c3b4-9509-4fa4-a8ef-a6391c23d05e"
+    },
+    {
+      "parameters": {
+        "command": "cd firewall-updater && docker compose up",
+        "cwd": "/home/zaza"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        40
+      ],
+      "id": "13840aab-3dd0-4d8a-b4ae-35bc4617d022",
+      "name": "SSH",
+      "credentials": {
+        "sshPassword": {
+          "id": "uSbbD0WBZBbgn7ah",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dba13a59-d511-4c37-a7fd-98d2a4253651",
+              "leftValue": "={{ $json.body.msg }}",
+              "rightValue": "status code 403",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        380,
+        -260
+      ],
+      "id": "59053cf5-af83-47f0-b0f0-ca6d60690315",
+      "name": "Filter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "SSH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SSH": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "70bfd2c7-3123-4c24-981e-c4c08ef4037e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "872f723c045c0459eeb8f8a1580f3b2a1d855c42e1da27475bf00d9992fc7538"
+  },
+  "id": "fh4z7lUWnIwmCOpC",
+  "tags": []
+}
