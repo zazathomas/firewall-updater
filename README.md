@@ -1,5 +1,4 @@
 # firewall-updater
-Welcome to the **firewall-updater**! 🎉
 
 Ever felt the need to overengineer your network security updates? Well, you're in the right place! This script is my one-stop solution for updating the K8s gateway API policies in a GitHub repository, which is vigilantly watched by ArgoCD for any updates. But wait, there's more! After tweaking the gateway API policy file, it also updates the network security group rules in Oracle Cloud to allow ingress traffic to certain assets. 🚀
 
