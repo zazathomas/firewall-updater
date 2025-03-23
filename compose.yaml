@@ -1,12 +1,17 @@
 services:
  firewall-updater:
     container_name: firewall-updater
-    image: ghcr.io/zazathomas/firewall-updater:0.0.1
+    image: ghcr.io/zazathomas/firewall-updater:0.1.0
     security_opt:
       - no-new-privileges:true
     volumes:
       - ./.oci:/root/.oci
+      - ./.oci_mgmt:/root/.oci_mgmt
     environment:
+      OCI_CONFIG: ${OCI_CONFIG}
+      MGMT_NSG_RULE_ID: ${MGMT_NSG_RULE_ID}
+      MGMT_NSG_ID: ${MGMT_NSG_ID}
+      MGMT_OCI_CONFIG: ${MGMT_OCI_CONFIG}
       NSG_ID: ${NSG_ID}
       NSG_RULE_ID: ${NSG_RULE_ID}
       GITHUB_TOKEN: ${GITHUB_TOKEN}

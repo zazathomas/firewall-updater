@@ -4,6 +4,7 @@ import yaml
 import os
 import logging
 import oci
+from oci.config import from_file
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -56,10 +57,10 @@ def update_file(updated_content: str, sha: str, GITHUB_TOKEN: str, GITHUB_API_UR
     response.raise_for_status()
     return response.json()
 
-def update_oci_nsg(NSG_ID: str, NSG_RULE_ID: str, public_ip: str) -> None:
+def update_oci_nsg(NSG_ID: str, NSG_RULE_ID: str, public_ip: str, OCI_CONFIG: str) -> None:
 
     # Set the configuration
-    config = oci.config.from_file()
+    config = from_file(file_location=OCI_CONFIG)
 
     # Initialize service client with default config file
     core_client = oci.core.VirtualNetworkClient(config)
@@ -94,6 +95,10 @@ def main():
     BRANCH_NAME = get_env_var("BRANCH_NAME")  
     NSG_ID = get_env_var('NSG_ID')
     NSG_RULE_ID = get_env_var('NSG_RULE_ID')
+    OCI_CONFIG = get_env_var('OCI_CONFIG')
+    MGMT_NSG_RULE_ID = get_env_var('MGMT_NSG_RULE_ID')
+    MGMT_NSG_ID = get_env_var('MGMT_NSG_ID')
+    MGMT_OCI_CONFIG = get_env_var('MGMT_OCI_CONFIG')
 
     # API Base URL
     GITHUB_API_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
@@ -124,8 +129,13 @@ def main():
     logger.info(f"Gateway API Network Policy updated successfully: {update_response['commit']['html_url']}")
 
     # Step 5: Update the OCI Network Security Group
-    logger.info('Updating the OCI Network Security Group Rules...')
-    update_oci_nsg(NSG_ID, NSG_RULE_ID, public_ip)
+    logger.info('Updating the Main OCI Network Security Group Rules...')
+    update_oci_nsg(NSG_ID, NSG_RULE_ID, public_ip, OCI_CONFIG)
+    logger.info('OCI Network Security Group updated successfully.')
+
+    # Step 6: Update the OCI Network Security Group for mgmt cluster
+    logger.info('Updating the MGMT OCI Network Security Group Rules...')
+    update_oci_nsg(MGMT_NSG_ID, MGMT_NSG_RULE_ID, public_ip, MGMT_OCI_CONFIG)
     logger.info('OCI Network Security Group updated successfully.')
 
 if __name__ == "__main__":
