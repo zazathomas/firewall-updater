@@ -4,7 +4,7 @@ Ever felt the need to overengineer your network security updates? Well, you're i
 
 ## How It Works
 
-1. **Uptime Kuma**: My trusty service monitor, Uptime Kuma, keeps an eye on your local and cloud services. When a service becomes unreachable and triggers a 403 Forbidden error, it sends a webhook notification to n8n for further action.
+1. **Uptime Kuma**: My trusty service monitor, Uptime Kuma, keeps an eye on my local and cloud services. When a service becomes unreachable and triggers a 403 Forbidden error, it sends a webhook notification to n8n for further action.
 2. **n8n Workflow Automation**: n8n processes the webhook notification from Uptime Kuma and executes this script using Docker Compose on a dedicated infrastructure node.
 3. **ArgoCD**: ArgoCD detects updates in the GitHub repository and applies the changes, enabling ingress traffic from a new public IP address to services running on My Kubernetes cluster.
 4. **Oracle Cloud**: Finally, the script updates Oracle Cloud's network security group rules, ensuring specified assets are accessible via the updated ingress traffic configurations.
